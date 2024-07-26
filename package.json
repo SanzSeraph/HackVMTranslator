@@ -1,0 +1,12 @@
+{
+  "name": "vmtranslator",
+  "version": "1.0.0",
+  "description": "Translates VM code for the Hack platform to assembly code",
+  "main": "main.mjs",
+  "scripts": {
+    "start": "node main.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Daniel Arant",
+  "license": "ISC"
+}
