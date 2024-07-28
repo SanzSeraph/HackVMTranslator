@@ -11,8 +11,8 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\main.mjs",
-            "args": [ "source" ]
+            "program": "${workspaceFolder}\\main.js",
+            "args": [ "exampledir/simpleadd.vm" ]
         }
     ]
 }

@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import Parser from './parser.js';
 
 let fileOrFolder = process.argv[2];
 
@@ -17,4 +18,16 @@ if (stat.isDirectory()) {
     }
 } else {
     filePaths.push(fileOrFolder);
+}
+
+for (let path of filePaths) {
+    let fileHandle = await fs.open(path, 'r');
+
+    let parser = new Parser(fileHandle);
+
+    parser.parse();
+
+    for (let command of parser.commands) {
+        console.log(command);
+    }
 }

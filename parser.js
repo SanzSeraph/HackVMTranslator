@@ -1,4 +1,4 @@
-import Command from "./command";
+import Command from "./command.js";
 
 const whitespaceLine = /^[\s]$/;
 
@@ -6,17 +6,17 @@ const whitespaceLine = /^[\s]$/;
 export default class Parser {
     constructor(fileHandle) {
         this._fileHandle = fileHandle;
-        this._commands
+        this.commands = [];
     }
 
     async parse() {
         this.commands = [];
 
-        for await (const line of _fileHandle.readLines()) {
+        for await (const line of this._fileHandle.readLines()) {
             this.parseLine(line);
         }
 
-        for (let command of this._commands) {
+        for (let command of this.commands) {
             console.log(command);
         }
     }
@@ -29,10 +29,11 @@ export default class Parser {
 
         let trimmedLine = line.trim();
 
+        // Ignore comment lines
         if (trimmedLine.startsWith('//')) {
             return;
         }
 
-        this._commands.push(new Command(trimmedLine));
+        this.commands.push(new Command(trimmedLine));
     }
 }

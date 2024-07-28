@@ -19,6 +19,15 @@ export default class Command {
                 case 'not':
                     this.type = CommandType.ARITHMETIC;
                     this.parseArithmetic(parts);
+                    break;
+                case 'push':
+                    this.type = CommandType.PUSH;
+                    this.parseBinary(parts);
+                    break;
+                case 'pop':
+                    this.type = CommandType.POP;
+                    this.parseBinary(parts);
+                    break;
                 case 'label':
                     this.type = CommandType.LABEL;
                     this.parseUnary(parts);
