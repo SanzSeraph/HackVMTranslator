@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import Parser from './parser.js';
+import ProgramCodeWriter from './program-code-writer.js';
 
 let fileOrFolder = process.argv[2];
 
@@ -20,6 +21,10 @@ if (stat.isDirectory()) {
     filePaths.push(fileOrFolder);
 }
 
+let outputFileHandle = await fs.open('output.asm');
+
+let programCodeWriter = new ProgramCodeWriter(outputFileHandle);
+
 for (let path of filePaths) {
     let fileHandle = await fs.open(path, 'r');
 
@@ -27,7 +32,11 @@ for (let path of filePaths) {
 
     parser.parse();
 
+    let parsedPath = path.parse(path);
+
+    programCodeWriter.currentInputFileName = parsedPath.name;
+
     for (let command of parser.commands) {
-        console.log(command);
+        programCodeWriter.write(command);
     }
 }
