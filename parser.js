@@ -15,10 +15,6 @@ export default class Parser {
         for await (const line of this._fileHandle.readLines()) {
             this.parseLine(line);
         }
-
-        for (let command of this.commands) {
-            console.log(command);
-        }
     }
 
     parseLine(line) {

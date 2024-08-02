@@ -1,6 +1,7 @@
 import ArithmeticCodeWriter from "./airthmetic-code-writer.js";
 import { CommandType } from "./command.js";
 import MemoryCodeWriter from "./memory-code-writer.js";
+import CodeWriter from './code-writer.js';
 
 const baseAddressPointers = {
     'local': 1,
@@ -18,25 +19,12 @@ export default class ProgramCodeWriter extends CodeWriter {
     }
     
     constructor(fileHandle) {
+        super(fileHandle);
         this._inputFileName = '';
         this._fileHandle = fileHandle;
         this._labelIndex = 0;
         this._arithmeticCodeWriter = new ArithmeticCodeWriter(fileHandle);
         this._memoryCodeWriter = new MemoryCodeWriter(fileHandle);
-
-        this.writeLine('@MAIN // Bypass shared code');
-        this.writeLine('0;JMP')
-        this.writeLine('(SET_M_TRUE)');
-        this.writeLine('M=-1');
-        this.writeLine('@R13 // Load the return address address');
-        this.writeLine('A=M // Load the return address value');
-        this.writeLine('0;JMP');
-        this.writeLine('(SET_M_FALSE)');
-        this.writeLine('M=0');
-        this.writeLine('@R13 // Load the return address address');
-        this.writeLine('A=M // Load the return address value');
-        this.writeLine('0;JMP');
-        this.writeLine('(MAIN)');
     }
 
     async write(command) {

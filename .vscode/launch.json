@@ -12,7 +12,7 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}\\main.js",
-            "args": [ "exampledir/simpleadd.vm" ]
+            "args": [ "pointertest.vm" ]
         }
     ]
 }

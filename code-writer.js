@@ -8,16 +8,16 @@ export default class CodeWriter {
     }
 
     async writeLine(text) {
-        this._fileHandle.write(text + '\n');
+        await this._fileHandle.write(text + '\n');
     }
 
-    async writeDecrementStackPointer() {
-        await this.writeLine('@SP // Load stack pointer address');
-        await this.writeLine('M=M-1 // Decrement stack pointer value');
+    async writeDecrementStackPointer(comment) {
+        await this.writeLine(`@SP ${comment ? comment : ''}`);
+        await this.writeLine('M=M-1');
     }
 
-    async writeIncrementStackPointer() {
-        await this.writeLine('@SP // Load stack pointer address');
+    async writeIncrementStackPointer(comment) {
+        await this.writeLine(`@SP ${comment ? comment : ''}`);
         await this.writeLine('M=M+1 // Increment stack pointer value');
     }
 }
