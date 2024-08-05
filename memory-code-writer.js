@@ -1,5 +1,6 @@
 import CodeWriter from "./code-writer.js";
 import { CommandType } from './command.js';
+import { vmMemoryMap } from "./vm-memory-map.js";
 
 const relativeSegments = ['argument', 'local', 'this', 'that'];
 
@@ -167,7 +168,7 @@ export default class MemoryCodeWriter extends CodeWriter {
         // The address of the stack pointer is already loaded
         await this.writeLine('A=M // Load the value of the stack pointer into A'); 
         await this.writeLine('D=M // Load the value from the top of the stack into D'); 
-        await this.writeLine('@R13 // Get the address of R13'); 
+        await this.writeLine(`@${vmMemoryMap.ABS_ADDRESS} // Get the address of R13`); 
         await this.writeLine('A=M // Get the effective address'); 
         await this.writeLine('M=D // Put the value from the stack at the effective address'); 
     }

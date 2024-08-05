@@ -34,6 +34,7 @@ for (let filePath of filePaths) {
 
     let parsedPath = path.parse(filePath);
 
+    await programCodeWriter.writeBootstrap();
     programCodeWriter.currentInputFileName = parsedPath.name;
 
     for (let command of parser.commands) {

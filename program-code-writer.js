@@ -2,14 +2,7 @@ import ArithmeticCodeWriter from "./airthmetic-code-writer.js";
 import { CommandType } from "./command.js";
 import MemoryCodeWriter from "./memory-code-writer.js";
 import CodeWriter from './code-writer.js';
-
-const baseAddressPointers = {
-    'local': 1,
-    'argument': 2,
-    'static': 16,
-    'pointer': 3,
-    'temp': 5
-}
+import ControlFlowCodeWriter from "./function-code-writer.js";
 
 export default class ProgramCodeWriter extends CodeWriter {
     set currentInputFileName(name) {
@@ -25,6 +18,18 @@ export default class ProgramCodeWriter extends CodeWriter {
         this._labelIndex = 0;
         this._arithmeticCodeWriter = new ArithmeticCodeWriter(fileHandle);
         this._memoryCodeWriter = new MemoryCodeWriter(fileHandle);
+        this._controlFlowCodeWriter = new ControlFlowCodeWriter(fileHandle);
+        this._inFunction = true;
+    }
+
+    async writeBootstrap() {
+        await this.writeLine('@256 // Initialize SP to 256');
+        await this.writeLine('D=A');
+        await this.writeLine('@SP');
+        await this.writeLine('M=D');
+
+        await this.writeLine('@Sys.init');
+        await this.writeLine('0;JUMP');
     }
 
     async write(command) {
@@ -32,6 +37,16 @@ export default class ProgramCodeWriter extends CodeWriter {
             await this._arithmeticCodeWriter.write(command);
         } else if (command.type == CommandType.PUSH || command.type == CommandType.POP) {
             await this._memoryCodeWriter.write(command);
+        } else if (command.type == CommandType.FUNCTION) {
+            await this._controlFlowCodeWriter.write(command);
+        } else if (command.type == CommandType.RETURN) {
+            await this._controlFlowCodeWriter.write(command);
+        } else if (command.type == CommandType.CALL) {
+            await this._controlFlowCodeWriter.write(command);
+        } else if (command.type == CommandType.LABEL) {
+            await this._controlFlowCodeWriter.write(command);
+        } else if (command.type == CommandType.GOTO) {
+            await this._controlFlowCodeWriter.Write(command);
         }
     }    
 }
