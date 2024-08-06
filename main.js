@@ -9,6 +9,8 @@ let stat = await fs.stat(fileOrFolder);
 
 let filePaths = [];
 
+let outputFileName = '';
+
 if (stat.isDirectory()) {
     let dir = await fs.opendir(fileOrFolder);
 
@@ -17,13 +19,21 @@ if (stat.isDirectory()) {
             filePaths.push(path.join(dirent.parentPath, dirent.name));
         }
     }
+
+    outputFileName = fileOrFolder + '.asm';
 } else {
     filePaths.push(fileOrFolder);
+
+    let parsedPath = path.parse(filePaths[0]);
+
+    outputFileName = parsedPath.name + '.asm';
 }
 
-let outputFileHandle = await fs.open('output.asm', 'w');
+let outputFileHandle = await fs.open(outputFileName, 'w');
 
 let programCodeWriter = new ProgramCodeWriter(outputFileHandle);
+
+await programCodeWriter.writeBootstrap();
 
 for (let filePath of filePaths) {
     let fileHandle = await fs.open(filePath, 'r');
@@ -34,7 +44,6 @@ for (let filePath of filePaths) {
 
     let parsedPath = path.parse(filePath);
 
-    await programCodeWriter.writeBootstrap();
     programCodeWriter.currentInputFileName = parsedPath.name;
 
     for (let command of parser.commands) {

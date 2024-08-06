@@ -22,17 +22,17 @@ export default class MemoryCodeWriter extends CodeWriter {
             await this.writePushRelativeSegment(command);
         } else if (command.arg1 == 'constant') {
             await this.writeLine(`@${command.arg2} // ${command.type} ${command.arg1} ${command.arg2}`);
-            await this.writeLine('D=A // Load constant in D'); 
-            await this.writeLine('@SP // Load SP address'); 
-            await this.writeLine('A=M // Load pointer value from memory'); 
-            await this.writeLine('M=D // Put loaded value form D on top of stack'); 
+            await this.writeLine('D=A'); 
+            await this.writeLine('@SP'); 
+            await this.writeLine('A=M'); 
+            await this.writeLine('M=D'); 
             await this.writeIncrementStackPointer();
         } else if (command.arg1 == 'static') {
             await this.writeLine(`@${this._currentFileName}.${command.arg2} // ${command.type} ${command.arg1} ${command.arg2}`); 
-            await this.writeLine('D=M // Load the data from static variable to D'); 
+            await this.writeLine('D=M'); 
             await this.writeLine('@SP');
-            await this.writeLine('A=M // Load address from stack pointer'); 
-            await this.writeLine('M=D // Put the data at the top of the stack'); 
+            await this.writeLine('A=M'); 
+            await this.writeLine('M=D'); 
             await this.writeIncrementStackPointer();
         } else if (command.arg1 == 'pointer') {
             if (command.arg2 == '0') {
@@ -41,10 +41,10 @@ export default class MemoryCodeWriter extends CodeWriter {
                 await this.writeLine(`@THAT // ${command.type} ${command.arg1} ${command.arg2}`); 
             }
 
-            await this.writeLine('D=M // Load THIS/THAT address into D'); 
-            await this.writeLine('@SP // Load SP address'); 
-            await this.writeLine('A=M // Load value of SP');
-            await this.writeLine('M=D // Put THIS address at top of the stack'); 
+            await this.writeLine('D=M'); 
+            await this.writeLine('@SP'); 
+            await this.writeLine('A=M');
+            await this.writeLine('M=D'); 
             await this.writeIncrementStackPointer();
         } else if (command.arg1 == 'temp') {
             switch (command.arg2) {
@@ -74,11 +74,11 @@ export default class MemoryCodeWriter extends CodeWriter {
                     break;
             }
             
-            await this.writeLine('D=M // Load value at address');
-            await this.writeLine('D=M // Load value of temp location to D'); 
-            await this.writeLine('@SP // Load stack pointer address'); 
-            await this.writeLine('A=M // Load value of stack pointer to A'); 
-            await this.writeLine('M=D // Load value of temp location to top of stack'); 
+            await this.writeLine('D=M');
+            await this.writeLine('D=M'); 
+            await this.writeLine('@SP'); 
+            await this.writeLine('A=M'); 
+            await this.writeLine('M=D'); 
             await this.writeIncrementStackPointer();
         }
     }
@@ -91,15 +91,15 @@ export default class MemoryCodeWriter extends CodeWriter {
         } else if (command.arg1 == 'static') {
             await this.writeDecrementStackPointer(`// ${command.type} ${command.arg1} ${command.arg2}`);
             // SP is already in A
-            await this.writeLine('A=M // Load stack pointer address');
-            await this.writeLine('D=M // Load item from top of stack');
+            await this.writeLine('A=M');
+            await this.writeLine('D=M');
             await this.writeLine(`@${this._currentFileName}.${command.arg2}`);
-            await this.writeLine('M=D // Put item from stack in static location');
+            await this.writeLine('M=D');
         } else if (command.arg1 == 'pointer') {
             await this.writeDecrementStackPointer(`// ${command.type} ${command.arg1} ${command.arg2}`);
             // SP is already in A
-            await this.writeLine('A=M // Load stack pointer value');
-            await this.writeLine('D=M // Load item from top of stack');
+            await this.writeLine('A=M');
+            await this.writeLine('D=M');
             
             if (command.arg2 == '0') {
                 await this.writeLine('@THIS');
@@ -107,11 +107,11 @@ export default class MemoryCodeWriter extends CodeWriter {
                 await this.writeLine('@THAT');
             }
 
-            await this.writeLine('M=D // Put item from stack in THIS or THAT');
+            await this.writeLine('M=D');
         } else if (command.arg1 == 'temp') {
             await this.writeDecrementStackPointer(`//  ${command.type} ${command.arg1} ${command.arg2}`);
-            await this.writeLine('A=M // Load value of stack pointer');
-            await this.writeLine('D=M // Load value at top of stack');
+            await this.writeLine('A=M');
+            await this.writeLine('D=M');
             
             switch (command.arg2) {
                 case '0':
@@ -140,37 +140,37 @@ export default class MemoryCodeWriter extends CodeWriter {
                     break;
             }
 
-            await this.writeLine('M=D // Put the value from the top of the stack in temp');
+            await this.writeLine('M=D');
         }
     }
 
     async writePopRelativeSegment(command) {
         if (command.arg1 == 'argument') {
             await this.writeLine(`@ARG // ${command.type} ${command.arg1} ${command.arg2}`); 
-            await this.writeLine('A=M // Load the value of ARG'); 
+            await this.writeLine('A=M'); 
         } else if (command.arg1 == 'local') {
             await this.writeLine(`@LCL // ${command.type} ${command.arg1} ${command.arg2}`); 
-            await this.writeLine('A=M // Load the value of ARG');
+            await this.writeLine('A=M');
         } else if (command.arg1 == 'this') {
             await this.writeLine(`@THIS // ${command.type} ${command.arg1} ${command.arg2}`);
-            await this.writeLine('A=M // Load the value of THIS');
+            await this.writeLine('A=M');
         } else if (command.arg1 == 'that') {
             await this.writeLine(`@THAT // ${command.type} ${command.arg1} ${command.arg2}`);
-            await this.writeLine('A=M // Load the value of THAT');
+            await this.writeLine('A=M');
         }
 
-        await this.writeLine('D=A // Load thevalue of ARG into D'); 
-        await this.writeLine(`@${command.arg2} // Load the offset into A`); 
-        await this.writeLine('D=D+A // Compute the effective address'); 
-        await this.writeLine('@R13 // Load the address of R13'); 
-        await this.writeLine('M=D // Store the effective address in R13'); 
+        await this.writeLine('D=A'); 
+        await this.writeLine(`@${command.arg2}`); 
+        await this.writeLine('D=D+A'); 
+        await this.writeLine('@R13'); 
+        await this.writeLine('M=D'); 
         await this.writeDecrementStackPointer();
         // The address of the stack pointer is already loaded
-        await this.writeLine('A=M // Load the value of the stack pointer into A'); 
-        await this.writeLine('D=M // Load the value from the top of the stack into D'); 
-        await this.writeLine(`@${vmMemoryMap.ABS_ADDRESS} // Get the address of R13`); 
-        await this.writeLine('A=M // Get the effective address'); 
-        await this.writeLine('M=D // Put the value from the stack at the effective address'); 
+        await this.writeLine('A=M'); 
+        await this.writeLine('D=M'); 
+        await this.writeLine(`@${vmMemoryMap.ABS_ADDRESS}`); 
+        await this.writeLine('A=M'); 
+        await this.writeLine('M=D'); 
     }
 
     async writePushRelativeSegment(command) {
@@ -184,13 +184,13 @@ export default class MemoryCodeWriter extends CodeWriter {
             await this.writeLine(`@THAT // ${command.type} ${command.arg1} ${command.arg2}`);
         }
 
-        await this.writeLine('D=M // Put base address in D'); 
-        await this.writeLine(`@${command.arg2} // Load offset into a`); 
-        await this.writeLine('A=D+A // Compute effective address into A'); 
-        await this.writeLine('D=M // Load the data into D'); 
-        await this.writeLine('@SP // Load the SP address'); 
-        await this.writeLine('A=M // Load the top of stack address'); 
-        await this.writeLine('M=D // Put the data at the top of the stcak');
+        await this.writeLine('D=M'); 
+        await this.writeLine(`@${command.arg2}`); 
+        await this.writeLine('A=D+A'); 
+        await this.writeLine('D=M'); 
+        await this.writeLine('@SP'); 
+        await this.writeLine('A=M'); 
+        await this.writeLine('M=D');
         await this.writeIncrementStackPointer();
     }
 }

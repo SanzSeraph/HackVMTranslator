@@ -2,13 +2,14 @@ import ArithmeticCodeWriter from "./airthmetic-code-writer.js";
 import { CommandType } from "./command.js";
 import MemoryCodeWriter from "./memory-code-writer.js";
 import CodeWriter from './code-writer.js';
-import ControlFlowCodeWriter from "./function-code-writer.js";
+import ControlFlowCodeWriter from "./control-flow-code-writer.js";
 
 export default class ProgramCodeWriter extends CodeWriter {
     set currentInputFileName(name) {
         super.currentInputFileName = name;
         this._arithmeticCodeWriter.currentInputFileName = name;
         this._memoryCodeWriter.currentFileName = name;
+        this._controlFlowCodeWriter.currentFileName = name;
     }
     
     constructor(fileHandle) {
@@ -29,7 +30,7 @@ export default class ProgramCodeWriter extends CodeWriter {
         await this.writeLine('M=D');
 
         await this.writeLine('@Sys.init');
-        await this.writeLine('0;JUMP');
+        await this.writeLine('0;JMP');
     }
 
     async write(command) {
@@ -46,7 +47,9 @@ export default class ProgramCodeWriter extends CodeWriter {
         } else if (command.type == CommandType.LABEL) {
             await this._controlFlowCodeWriter.write(command);
         } else if (command.type == CommandType.GOTO) {
-            await this._controlFlowCodeWriter.Write(command);
+            await this._controlFlowCodeWriter.write(command);
+        } else if (command.type == CommandType.IF) {
+            await this._controlFlowCodeWriter.write(command);
         }
     }    
 }

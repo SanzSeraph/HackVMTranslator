@@ -4,7 +4,7 @@ export default class Command {
         this.arg1 = '';
         this.arg2 = '';
 
-        let parts = rawLine.split(' ').filter(p => p !== '');
+        let parts = rawLine.split(/[\s]+/).filter(p => p !== '');
 
         if (parts.length) {
             switch (parts[0]) {
