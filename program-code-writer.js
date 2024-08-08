@@ -5,9 +5,9 @@ import CodeWriter from './code-writer.js';
 import ControlFlowCodeWriter from "./control-flow-code-writer.js";
 
 export default class ProgramCodeWriter extends CodeWriter {
-    set currentInputFileName(name) {
-        super.currentInputFileName = name;
-        this._arithmeticCodeWriter.currentInputFileName = name;
+    set currentFileName(name) {
+        super.currentFileName = name;
+        this._arithmeticCodeWriter.currentFileName = name;
         this._memoryCodeWriter.currentFileName = name;
         this._controlFlowCodeWriter.currentFileName = name;
     }
@@ -28,9 +28,7 @@ export default class ProgramCodeWriter extends CodeWriter {
         await this.writeLine('D=A');
         await this.writeLine('@SP');
         await this.writeLine('M=D');
-
-        await this.writeLine('@Sys.init');
-        await this.writeLine('0;JMP');
+        await this._controlFlowCodeWriter.writeCallSysInit();
     }
 
     async write(command) {

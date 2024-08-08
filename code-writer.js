@@ -11,13 +11,13 @@ export default class CodeWriter {
         await this._fileHandle.write(text + '\n');
     }
 
-    async writeDecrementStackPointer() {
-        await this.writeLine(`@SP`);
+    async writeDecrementStackPointer(comment) {
+        await this.writeLine(`@SP ${comment ? comment : ''}`);
         await this.writeLine('M=M-1');
     }
 
-    async writeIncrementStackPointer() {
-        await this.writeLine(`@SP`);
+    async writeIncrementStackPointer(comment) {
+        await this.writeLine(`@SP ${comment ? comment : ''}`);
         await this.writeLine('M=M+1');
     }
 }

@@ -3,10 +3,6 @@ import CodeWriter from "./code-writer.js";
 const binaryOperations = [ 'add', 'sub', 'and', 'or', 'eq', 'lt', 'gt' ];
 
 export default class ArithmeticCodeWriter extends CodeWriter {
-    set currentInputFileName(name) {
-        this._inputFileName = name;
-    }
-
     constructor(fileHandle) {
         super(fileHandle);
         this._labelIndex = 0;

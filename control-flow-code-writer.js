@@ -61,6 +61,14 @@ export default class ControlFlowCodeWriter extends CodeWriter {
     }
 
     async writeReturn(command) {
+        await this.writeLine('@LCL // Get return address');
+        await this.writeLine('D=M');
+        await this.writeLine('@5');
+        await this.writeLine('A=D-A // The address of the return address');
+        await this.writeLine('D=M');
+        await this.writeLine(`@${vmMemoryMap.RETURN}`);
+        await this.writeLine('M=D // Temporarily restore the return address');
+
         await this.writeLine('@SP // Pop the top value from the stack to put in ARG[0]');
         await this.writeLine('A=M-1');
         await this.writeLine('D=M');
@@ -98,14 +106,6 @@ export default class ControlFlowCodeWriter extends CodeWriter {
         await this.writeLine('@ARG');
         await this.writeLine('M=D');
 
-        await this.writeLine('@LCL // Get return address');
-        await this.writeLine('D=M');
-        await this.writeLine('@5');
-        await this.writeLine('A=D-A // The address of the return address');
-        await this.writeLine('D=M');
-        await this.writeLine(`@${vmMemoryMap.RETURN}`);
-        await this.writeLine('M=D // Temporarily restore the return address');
-
         await this.writeLine('@LCL // Restore LCL');
         await this.writeLine('D=M');
         await this.writeLine('@4');
@@ -117,13 +117,11 @@ export default class ControlFlowCodeWriter extends CodeWriter {
         await this.writeLine(`@${vmMemoryMap.RETURN} // Return`);
         await this.writeLine('A=M');
         await this.writeLine('0;JMP');
-
-        this._currentFunction = 'global';
     }
 
     async writeCallSysInit() {
         await this.writeCall({
-            type: CommandType.FUNCTION,
+            type: CommandType.CALL,
             arg1: 'Sys.init',
             arg2: '0'
         });
